@@ -22,7 +22,7 @@ jobs:
       - name: Build
         id: build
         run: |
-          npm install bun
+          npm install -g bun
           bun install
           bun run build
           mkdir ${{ env.PLUGIN_NAME }}
