@@ -1,0 +1,29 @@
+{
+  "name": "logseq-archive-webpage",
+  "version": "0.1.0",
+  "author": "Pat Migliaccio",
+  "main": "index.html",
+  "description": "Archive URLs directly in Logseq and save locally.",
+  "license": "MIT",
+  "scripts": {
+    "build": "bun build ./src/index.ts --target=browser --outfile=./build/bundle.js"
+  },
+  "devDependencies": {
+    "bun": "^1.0.11",
+    "bun-types": "latest"
+  },
+  "browserslist": [
+    "chrome 80"
+  ],
+  "logseq": {
+    "id": "logseq-archive-webpage",
+    "icon": "icon.png"
+  },
+  "peerDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.15",
+    "@wabarc/cairn": "^3.0.0"
+  }
+}
