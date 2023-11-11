@@ -1,11 +1,18 @@
 import "@logseq/libs";
 import { archive } from "archive";
+import { settings } from "settings";
 import { hash } from "utils";
 
 function main() {
+  settings();
+
   logseq.Editor.registerSlashCommand(
     "🌐 Archive Webpage",
     async () => await logseq.Editor.insertAtEditingCursor(`{{renderer archive `)
+  );
+
+  logseq.Editor.registerSlashCommand("Archive Webpage Settings", async () =>
+    logseq.showSettingsUI()
   );
 
   logseq.App.onMacroRendererSlotted(({ slot, payload }) => {
@@ -27,11 +34,20 @@ function main() {
 
       try {
         logseq.provideUI(render(key, "Archiving..."));
-        const filePath = await archive(url);
+        const { localPath, internetArchiveUrl } = await archive(url);
+
+        const links: Link[] = [
+          { key: "Archive", value: localPath },
+          { key: "Internet Archive", value: internetArchiveUrl },
+        ];
+
         logseq.provideUI(
           render(
             key,
-            `<a href="${url}" target="_blank">${url}</a> (<a href="${filePath}" target="_blank">Archived</a>)`
+            `<a href="${url}" target="_blank">${url}</a> ${links
+              .filter((link) => link.value)
+              .map(a)
+              .join(" ")}`
           )
         );
       } catch (err: any) {
@@ -42,3 +58,7 @@ function main() {
 }
 
 logseq.ready(main).catch(console.error);
+
+type Link = { key: string; value?: string };
+const a = ({ key, value }: Link) =>
+  `(<a href="${value}" target="_blank">${key}</a>)`;

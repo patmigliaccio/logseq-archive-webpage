@@ -1,3 +1,4 @@
+import { Settings } from "settings";
 import { cleanUrl } from "utils";
 
 const assetStorage = logseq.Assets.makeSandboxStorage();
@@ -15,5 +16,31 @@ export const archive = async (url: string) => {
     await assetStorage.setItem(fileName, archived);
   }
   const files = await logseq.Assets.listFilesOfCurrentGraph();
-  return files.find((file) => file.path.includes(fileName))?.path ?? fileName;
+  const localPath = files.find((file) => file.path.includes(fileName))?.path;
+  const internetArchiveUrl = await getInternetArchiveUrl(url);
+
+  return {
+    localPath,
+    internetArchiveUrl,
+  };
+};
+
+type InternetArchiveResponse = {
+  url: string;
+  archived_snapshots: {
+    closest?: {
+      status: "200";
+      available: boolean;
+      url: string;
+      timestamp: string;
+    };
+  };
+};
+
+const getInternetArchiveUrl = async (url: string) => {
+  if (logseq.settings?.[Settings.UseInternetArchive]) {
+    const res = await fetch(`https://archive.org/wayback/available?url=${url}`);
+    const result: InternetArchiveResponse = await res.json();
+    return result?.archived_snapshots?.closest?.url;
+  }
 };
