@@ -8,7 +8,9 @@ function main() {
 
   logseq.Editor.registerSlashCommand(
     "🌐 Archive Webpage",
-    async () => await logseq.Editor.insertAtEditingCursor(`{{renderer archive `)
+    [
+      ["editor/input", "{{renderer archive }}",  { "backward-pos": 2 }]
+    ]
   );
 
   logseq.Editor.registerSlashCommand("Archive Webpage Settings", async () =>
