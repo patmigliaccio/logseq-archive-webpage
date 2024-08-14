@@ -31,6 +31,9 @@ function main() {
 
     (async () => {
       const key = await hash(url);
+      
+      // makes the surrounding two divs inline to avoid ugly line/word breaks 
+      logseq.provideStyle(`#${slot}, #${slot} > div { display: inline; }`)
 
       try {
         logseq.provideUI(render(key, "Archiving..."));
